@@ -23,7 +23,11 @@ public interface IUserService {
 
     List<PostDto> getPostsByUser(long userId);
 
-    List<UserDto> getUsersWithMultiplePosts();
+    List<UserDto> getUsersWithPostsMoreThan(int minNumPosts);
 
-    List<CommentDto> getCommentsByUser(long userId, long postId);
+    List<UserDto> getUsersWithPostTitleMatching(String title);
+
+    List<CommentDto> getAllUserComments(long userId, long postId);
+
+    CommentDto getUserCommentById(long userId, long postId, long commentId);
 }

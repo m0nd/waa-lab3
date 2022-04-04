@@ -21,8 +21,14 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers(@RequestParam(name = "has-multiple-posts", required = false) boolean hasMultiplePosts) {
-        return hasMultiplePosts ? userService.getUsersWithMultiplePosts() : userService.getAllUsers();
+    public List<UserDto> getAllUsers(
+            @RequestParam(name = "minPosts", required = false) Integer minPosts,
+            @RequestParam(name = "postTitle", required = false) String postTitle
+    ) {
+        if (minPosts != null) return userService.getUsersWithPostsMoreThan(minPosts);
+        if (postTitle != null) return userService.getUsersWithPostTitleMatching(postTitle);
+
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
@@ -36,8 +42,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/posts/{postId}/comments")
-    public List<CommentDto> getCommentsByUser(@PathVariable long userId, @PathVariable long postId) {
-        return userService.getCommentsByUser(userId,postId);
+    public List<CommentDto> getAllUserComments(@PathVariable long userId, @PathVariable long postId) {
+        return userService.getAllUserComments(userId,postId);
+    }
+
+    @GetMapping("/{userId}/posts/{postId}/comments/{commentId}")
+    public CommentDto getUserCommentById(@PathVariable long userId, @PathVariable long postId, @PathVariable long commentId) {
+        return userService.getUserCommentById(userId, postId, commentId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -47,8 +58,13 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/posts")
-    public void addPostByUser(@PathVariable long userId, @RequestBody PostDto postDto) {
+    public void savePostByUser(@PathVariable long userId, @RequestBody PostDto postDto) {
         userService.savePostByUser(userId, postDto);
+    }
+
+    @PostMapping("/{userId}/posts/{postId}/comments")
+    public void saveCommentByUser(@PathVariable long userId, @PathVariable long postId, @RequestBody CommentDto commentDto) {
+        userService.saveCommentByUser(userId, postId, commentDto);
     }
 
     @PutMapping("/{userId}")

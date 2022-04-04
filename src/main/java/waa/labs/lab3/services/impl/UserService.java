@@ -77,14 +77,15 @@ public class UserService implements IUserService {
 
     @Override
     public void saveCommentByUser(long userId, long postId, CommentDto commentDto) {
-        User desiredUser = userRepo.findById(userId).orElse(null);
-        Post desiredPost = postRepo.findById(postId).orElse(null);
-        if (desiredUser != null && desiredPost != null) {
-            Comment newComment = new Comment();
-            newComment.setName(commentDto.getName());
-//            desiredUser.getPosts().stream().filter(post -> post.getId() == desiredPost.getId()).findFirst().orElse(null)
-            desiredPost.addComment(newComment);
-        }
+        var desiredUser = userRepo.findById(userId).orElse(null);
+        if (desiredUser == null) return;
+
+        var desiredPost = desiredUser.getPosts().stream().filter(post -> post.getId() == postId).findFirst().orElse(null);
+        if (desiredPost == null) return;
+
+        Comment newComment = new Comment();
+        newComment.setName(commentDto.getName());
+        desiredPost.addComment(newComment);
     }
 
     @Override
@@ -111,12 +112,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<UserDto> getUsersWithMultiplePosts() {
-        return userListToDtoMapper.mapList(userRepo.findHavingMultiplePosts(), UserDto.class);
+    public List<UserDto> getUsersWithPostsMoreThan(int minNumPosts) {
+        return userListToDtoMapper.mapList(userRepo.findHavingPostsMoreThan(minNumPosts), UserDto.class);
     }
 
     @Override
-    public List<CommentDto> getCommentsByUser(long userId, long postId) {
+    public List<UserDto> getUsersWithPostTitleMatching(String postTitle) {
+        return userListToDtoMapper.mapList(userRepo.findHavingPostTitleMatching(postTitle), UserDto.class);
+    }
+
+    @Override
+    public List<CommentDto> getAllUserComments(long userId, long postId) {
         var user = userRepo.findById(userId).orElse(null);
         if (user == null) return new ArrayList<>();
 
@@ -124,5 +130,18 @@ public class UserService implements IUserService {
         if (desiredPost == null) return new ArrayList<>();
 
         return commentListToDtoMapper.mapList(desiredPost.getComments(), CommentDto.class);
+    }
+
+    @Override
+    public CommentDto getUserCommentById(long userId, long postId, long commentId) {
+        var user = userRepo.findById(userId).orElse(null);
+        if (user == null) return null;
+
+        var desiredPost = user.getPosts().stream().filter(post -> post.getId() == postId).findFirst().orElse(null);
+        if (desiredPost == null) return null;
+
+        var desiredComment = desiredPost.getComments().stream().filter(comment -> comment.getId() == commentId).findFirst().orElse(null);
+
+        return modelMapper.map(desiredComment, CommentDto.class);
     }
 }

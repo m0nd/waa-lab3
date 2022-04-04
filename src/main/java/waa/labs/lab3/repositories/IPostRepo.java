@@ -8,4 +8,6 @@ import java.util.List;
 public interface IPostRepo extends CrudRepository<Post, Long> {
     @Override
     List<Post> findAll();
+
+    List<Post> findByTitle(String title);
 }

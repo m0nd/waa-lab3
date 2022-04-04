@@ -10,6 +10,9 @@ public interface IUserRepo extends CrudRepository<User, Long> {
     @Override
     List<User> findAll();
 
-    @Query("select u from User u where u.posts.size > 1")
-    List<User> findHavingMultiplePosts();
+    @Query("select u from User u where size(u.posts) > :minNumPosts")
+    List<User> findHavingPostsMoreThan(int minNumPosts);
+
+    @Query("select u from User u join u.posts as p where p.title like :postTitle%")
+    List<User> findHavingPostTitleMatching(String postTitle);
 }
