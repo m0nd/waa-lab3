@@ -11,7 +11,7 @@ public interface IPostService {
 
     PostDto getPostById(long postId);
 
-    List<PostDto> getPostsWithTitleMatching(String title);
+    List<PostDto> getPostsWithTitleMatching(String postTitle);
 
     List<CommentDto> getAllPostComments(long postId);
 

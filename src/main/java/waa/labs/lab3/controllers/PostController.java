@@ -19,9 +19,9 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostDto> getAllPosts(@RequestParam(name = "title", required = false) String title) {
-        System.out.println("In PostController: title = " + title);
-        return title != null ? postService.getPostsWithTitleMatching(title) : postService.getAllPosts();
+    public List<PostDto> getAllPosts(@RequestParam(name = "title", required = false) String postTitle) {
+        System.out.println("In PostController: title = " + postTitle);
+        return postTitle != null ? postService.getPostsWithTitleMatching(postTitle) : postService.getAllPosts();
     }
 
 

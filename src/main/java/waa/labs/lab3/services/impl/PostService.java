@@ -47,8 +47,8 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public List<PostDto> getPostsWithTitleMatching(String title) {
-        return postListToDtoMapper.mapList(postRepo.findByTitle(title), PostDto.class);
+    public List<PostDto> getPostsWithTitleMatching(String postTitle) {
+        return postListToDtoMapper.mapList(postRepo.findByTitleStartsWith(postTitle), PostDto.class);
     }
 
     @Override
