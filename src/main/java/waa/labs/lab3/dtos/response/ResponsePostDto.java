@@ -1,9 +1,9 @@
-package waa.labs.lab3.domain.dtos;
+package waa.labs.lab3.dtos.response;
 
 import lombok.Data;
 
 @Data
-public class PostDto {
+public class ResponsePostDto {
     long id;
     String title;
     String content;

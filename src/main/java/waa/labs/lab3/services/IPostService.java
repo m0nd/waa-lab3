@@ -1,25 +1,25 @@
 package waa.labs.lab3.services;
 
-import waa.labs.lab3.domain.Post;
-import waa.labs.lab3.domain.dtos.CommentDto;
-import waa.labs.lab3.domain.dtos.PostDto;
+import waa.labs.lab3.dtos.CommentDto;
+import waa.labs.lab3.dtos.request.RequestPostDto;
+import waa.labs.lab3.dtos.response.ResponsePostDto;
 
 import java.util.List;
 
 public interface IPostService {
-    List<PostDto> getAllPosts();
+    List<ResponsePostDto> getAllPosts();
 
-    PostDto getPostById(long postId);
+    ResponsePostDto getPostById(long postId);
 
-    List<PostDto> getPostsWithTitleMatching(String postTitle);
+    List<ResponsePostDto> getPostsWithTitleMatching(String postTitle);
 
     List<CommentDto> getAllPostComments(long postId);
 
-    void savePost(PostDto postDto);
+    void savePost(RequestPostDto postDto);
 
     void saveCommentForPost(long postId, CommentDto commentDto);
 
-    void updatePost(long postId, PostDto postDto);
+    void updatePost(long postId, RequestPostDto postDto);
 
     void deletePostById(long postId);
 

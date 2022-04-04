@@ -1,4 +1,4 @@
-package waa.labs.lab3.domain.dtos;
+package waa.labs.lab3.dtos;
 
 import lombok.Data;
 

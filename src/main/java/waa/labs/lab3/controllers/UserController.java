@@ -3,9 +3,9 @@ package waa.labs.lab3.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import waa.labs.lab3.domain.dtos.CommentDto;
-import waa.labs.lab3.domain.dtos.PostDto;
-import waa.labs.lab3.domain.dtos.UserDto;
+import waa.labs.lab3.dtos.CommentDto;
+import waa.labs.lab3.dtos.UserDto;
+import waa.labs.lab3.dtos.response.ResponsePostDto;
 import waa.labs.lab3.services.IUserService;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/posts")
-    public List<PostDto> getPostsByUser(@PathVariable long userId) {
+    public List<ResponsePostDto> getPostsByUser(@PathVariable long userId) {
         return userService.getPostsByUser(userId);
     }
 
@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/posts")
-    public void savePostByUser(@PathVariable long userId, @RequestBody PostDto postDto) {
+    public void savePostByUser(@PathVariable long userId, @RequestBody ResponsePostDto postDto) {
         userService.savePostByUser(userId, postDto);
     }
 

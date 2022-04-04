@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import waa.labs.lab3.domain.Comment;
 import waa.labs.lab3.domain.Post;
-import waa.labs.lab3.domain.dtos.CommentDto;
-import waa.labs.lab3.domain.dtos.PostDto;
+import waa.labs.lab3.dtos.CommentDto;
+import waa.labs.lab3.dtos.request.RequestPostDto;
+import waa.labs.lab3.dtos.response.ResponsePostDto;
 import waa.labs.lab3.helpers.ListMapper;
 import waa.labs.lab3.repositories.IPostRepo;
+import waa.labs.lab3.repositories.IUserRepo;
 import waa.labs.lab3.services.IPostService;
 
 import java.util.ArrayList;
@@ -17,38 +19,41 @@ import java.util.List;
 @Service
 public class PostService implements IPostService {
     IPostRepo postRepo;
+    IUserRepo userRepo;
 
     ModelMapper modelMapper;
-    ListMapper<Post, PostDto> postListToDtoMapper;
+    ListMapper<Post, ResponsePostDto> postListToDtoMapper;
     ListMapper<Comment, CommentDto> commentListToDtoMapper;
 
     @Autowired
     public PostService(
             IPostRepo postRepo,
+            IUserRepo userRepo,
             ModelMapper modelMapper,
-            ListMapper<Post, PostDto> postListMapper,
+            ListMapper<Post, ResponsePostDto> postListMapper,
             ListMapper<Comment, CommentDto> commentListMapper
     ) {
         this.postRepo = postRepo;
+        this.userRepo = userRepo;
         this.modelMapper = modelMapper;
         this.postListToDtoMapper = postListMapper;
         this.commentListToDtoMapper = commentListMapper;
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
-        return postListToDtoMapper.mapList(postRepo.findAll(), PostDto.class);
+    public List<ResponsePostDto> getAllPosts() {
+        return postListToDtoMapper.mapList(postRepo.findAll(), ResponsePostDto.class);
     }
 
     @Override
-    public PostDto getPostById(long postId) {
+    public ResponsePostDto getPostById(long postId) {
         var desiredPost = postRepo.findById(postId).orElse(null);
-        return (desiredPost == null) ? null : modelMapper.map(desiredPost, PostDto.class);
+        return (desiredPost == null) ? null : modelMapper.map(desiredPost, ResponsePostDto.class);
     }
 
     @Override
-    public List<PostDto> getPostsWithTitleMatching(String postTitle) {
-        return postListToDtoMapper.mapList(postRepo.findByTitleStartsWith(postTitle), PostDto.class);
+    public List<ResponsePostDto> getPostsWithTitleMatching(String postTitle) {
+        return postListToDtoMapper.mapList(postRepo.findByTitleStartsWith(postTitle), ResponsePostDto.class);
     }
 
     @Override
@@ -59,11 +64,15 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public void savePost(PostDto postDto) {
-        Post newPost = new Post();
-        newPost.setTitle(postDto.getTitle());
-        newPost.setContent(postDto.getContent());
-        postRepo.save(newPost);
+    public void savePost(RequestPostDto postDto) {
+        var desiredUser = userRepo.findById(postDto.getAuthorId()).orElse(null);
+        if (desiredUser != null) {
+            Post newPost = new Post();
+            newPost.setTitle(postDto.getTitle());
+            newPost.setContent(postDto.getContent());
+            desiredUser.addPost(newPost);
+            userRepo.save(desiredUser);
+        }
     }
 
     @Override
@@ -78,7 +87,7 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public void updatePost(long postId, PostDto postDto) {
+    public void updatePost(long postId, RequestPostDto postDto) {
         Post desiredPost = postRepo.findById(postId).orElse(null);
         if (desiredPost != null) {
             desiredPost.setTitle(postDto.getTitle());

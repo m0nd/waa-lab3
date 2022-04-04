@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import waa.labs.lab3.domain.Comment;
 import waa.labs.lab3.domain.Post;
 import waa.labs.lab3.domain.User;
-import waa.labs.lab3.domain.dtos.CommentDto;
-import waa.labs.lab3.domain.dtos.PostDto;
-import waa.labs.lab3.domain.dtos.UserDto;
+import waa.labs.lab3.dtos.CommentDto;
+import waa.labs.lab3.dtos.UserDto;
+import waa.labs.lab3.dtos.response.ResponsePostDto;
 import waa.labs.lab3.helpers.ListMapper;
 import waa.labs.lab3.repositories.IPostRepo;
 import waa.labs.lab3.repositories.IUserRepo;
@@ -27,7 +27,7 @@ public class UserService implements IUserService {
     private final ModelMapper modelMapper;
 
     private final ListMapper<User, UserDto> userListToDtoMapper;
-    private final ListMapper<Post, PostDto> postListToDtoMapper;
+    private final ListMapper<Post, ResponsePostDto> postListToDtoMapper;
     private final ListMapper<Comment, CommentDto> commentListToDtoMapper;
 
     @Autowired
@@ -36,7 +36,7 @@ public class UserService implements IUserService {
             IPostRepo postRepo,
             ModelMapper modelMapper,
             ListMapper<User, UserDto> userListMapper,
-            ListMapper<Post, PostDto> postListMapper,
+            ListMapper<Post, ResponsePostDto> postListMapper,
             ListMapper<Comment, CommentDto> commentListMapper
     ) {
         this.userRepo = userRepo;
@@ -65,7 +65,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void savePostByUser(long userId, PostDto postDto) {
+    public void savePostByUser(long userId, ResponsePostDto postDto) {
         User desiredUser = userRepo.findById(userId).orElse(null);
         if (desiredUser != null) {
             Post newPost = new Post();
@@ -104,11 +104,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<PostDto> getPostsByUser(long userId) {
+    public List<ResponsePostDto> getPostsByUser(long userId) {
         var user = userRepo.findById(userId).orElse(null);
         if (user == null)
             return new ArrayList<>();
-        return postListToDtoMapper.mapList(user.getPosts(), PostDto.class);
+        return postListToDtoMapper.mapList(user.getPosts(), ResponsePostDto.class);
     }
 
     @Override

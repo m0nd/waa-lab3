@@ -1,8 +1,9 @@
 package waa.labs.lab3.services;
 
-import waa.labs.lab3.domain.dtos.CommentDto;
-import waa.labs.lab3.domain.dtos.PostDto;
-import waa.labs.lab3.domain.dtos.UserDto;
+import waa.labs.lab3.dtos.CommentDto;
+import waa.labs.lab3.dtos.request.RequestPostDto;
+import waa.labs.lab3.dtos.UserDto;
+import waa.labs.lab3.dtos.response.ResponsePostDto;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface IUserService {
 
     void saveUser(UserDto userDto);
 
-    void savePostByUser(long userId, PostDto postDto);
+    void savePostByUser(long userId, ResponsePostDto postDto);
 
     void saveCommentByUser(long userId, long postId, CommentDto commentDto);
 
@@ -21,7 +22,7 @@ public interface IUserService {
 
     void deleteUserById(long userId);
 
-    List<PostDto> getPostsByUser(long userId);
+    List<ResponsePostDto> getPostsByUser(long userId);
 
     List<UserDto> getUsersWithPostsMoreThan(int minNumPosts);
 
